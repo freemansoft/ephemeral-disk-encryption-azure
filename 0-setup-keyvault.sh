@@ -66,26 +66,30 @@ fi
 identity_name=$(jq -r ".name" <<< "$identity_metadata")
 principal_id=$(jq -r ".principalId" <<< "$identity_metadata")
 identity_id=$(jq -r ".id" <<< "$identity_metadata")
-echo "User assigned identity: $identity_name principal: $principal_id id: $identity_id"
 # client id is required for queries if multiple identities tied to VM
 identity_client_id=$(        jq -r ".clientId"        <<< "$identity_metadata")
 identity_client_secret_url=$(jq -r ".clientSecretUrl" <<< "$identity_metadata")
-echo "user assigned identity client secret url: $identity_client_secret_url"
+echo "User Assigned Identity: $identity_name principal: $principal_id id: $identity_id client secret url: $identity_client_secret_url"
 
 echo "adding policy and role assignment for $principal_id to $key_vault_name"
 set_policy_results=$(az keyvault set-policy --secret-permissions get list --name $key_vault_name --object-id $principal_id)
-set_role_assignment_results=$(az role assignment create --assignee $principal_id --role reader --resource-group $resource_group)
+#set_role_assignment_results=$(az role assignment create --assignee $principal_id --role reader --resource-group $resource_group)
 
 echo "------------VM----------------"
+#az vm list-sizes --location $region --output table
 # Create the VM if it does not exist -- this is an example so we do it as simply as possible
 # This command does not return the ip address
 vms_metadata=$(az vm list --resource-group "$resource_group" --query "[?name=='$vm_name']")
 if [ "[]" == "$vms_metadata" ]; then
     echo "creating vm $vm_name"
     # assign identity on creation
-    vm_create_results=$( az vm create --resource-group "$resource_group" --name "$vm_name" \
+    vm_create_results=$( az vm create --resource-group "$resource_group" \
+        --name "$vm_name" \
         --assign-identity [system] $identity_id \
-        --image UbuntuLTS --admin-username "$vm_admin_user" --generate-ssh-keys )
+        --image UbuntuLTS \
+        --admin-username "$vm_admin_user" \
+        --size "$vm_type" \
+        --generate-ssh-keys )
     public_ip=$(jq -r ".publicIpAddress" <<< "$vm_create_results")
     echo "Connect with: 'ssh $vm_admin_user@$public_ip'"
 else
@@ -93,22 +97,29 @@ else
     public_ip=$(az vm show -d --resource-group "$resource_group" --name "$vm_name" --query publicIps -o tsv)
     echo "vm exists -- assuming admin id is same and ssh keys exist ==> 'ssh $vm_admin_user@$public_ip' "
 fi
-# 
 
-# verification hints
-# ssh into the remote hosts
-# retrieve the secret using the scripts 'on the remote'
-# we want to somehow copy the code or just the values below to the newly created remote machine
-# or we want to amke it where the system account can look up the client id and the secret id
+# This is a hack
+# This creates a script that is copied to the remote host that will retrieve the secret
+# ssh to the box and then run the script
 echo ""
 echo "==============================="
 echo "----------connect       ------------------"
 echo "ssh $vm_admin_user@$public_ip"
 echo "----------one the remote------------------"
-echo "sudo snap install jq"
-echo ""
-echo "assigned_identity_token=\$(curl 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&client_id=$identity_client_id&resource=https%3A%2F%2Fvault.azure.net' -H Metadata:true | jq -r '.access_token')"
-echo 'curl' $secret_id'?api-version=7.2 -H "Authorization: Bearer $assigned_identity_token" -H "Content-Type: application/json"'
+cat > vm-tools.sh <<EOL
+#!/bin/bash
+# created `date`
+
+# curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash 
+sudo snap install jq
+
+assigned_identity_token=\$(curl 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&client_id=$identity_client_id&resource=https%3A%2F%2Fvault.azure.net' -H Metadata:true | jq -r '.access_token')
+results=\$(curl $secret_id?api-version=7.2 -H "Authorization: Bearer \$assigned_identity_token" -H "Content-Type: application/json")
+echo "\$results"
+
+EOL
+scp -q vm-tools.sh $vm_admin_user@$public_ip:vm-tools.sh
+echo "bash vm-tools.sh"
 echo "==============================="
 # add additional code to pull down the LUKS encryption files
 

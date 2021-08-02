@@ -4,6 +4,9 @@ This project creates an Azure KeyVault Secret and then creates a VM and makes th
 * It creates a User Assigned identity and gives it access to the secret
 * The VM must query for the secret with that identity
 
+# WARNING
+These scripts allocate LS_v2 machines by default.  They are **expensive** so _tear them down_ when done.
+
 # TODO
 * Add encryption of ephemeral disks using the secret retireved from Azure KeyValut
 
@@ -12,6 +15,8 @@ This project creates an Azure KeyVault Secret and then creates a VM and makes th
     1. Ubuntu currently has the latest installed. So WSL2 developers running Ubuntu should be fine 
     1. `az --version` should be 2.26.1 _or later_
 1. Run script `0` to create all the resources
+    1. run the `ssh` command to connect to the vm
+    1. run the `vm-tools.sh` script to retrieve the secret
 1. Run script `9` to destroy all resources
 
 
