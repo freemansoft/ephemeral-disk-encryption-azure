@@ -1,0 +1,12 @@
+[Unit]
+Requires=unlock-data1.service
+After=unlock-data1.service
+
+[Mount]
+What=/dev/mapper/data1
+Where=/data1
+Type=xfs
+Options=defaults,noatime
+
+[Install]
+WantedBy=multi-user.target

@@ -22,7 +22,7 @@ These scripts allocate LS_v2 machines by default.  They are **expensive** so _te
 
 ## References
 * https://withblue.ink/2020/01/19/auto-mounting-encrypted-drives-with-a-remote-key-on-linux.html
-* https://gist.github.com/seanb4t/fc244805aec83e55bfd1d306c19cd624
+* Files in vm-files sourced from https://gist.github.com/seanb4t/fc244805aec83e55bfd1d306c19cd624 
 * https://www.azurecitadel.com/vm/identity/
 * https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/tutorial-windows-vm-access-nonaad
 * https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt
