@@ -5,7 +5,8 @@
 # Assumes default subscription
 
 # Edit env.sh to your preferences
-source env.sh
+DIR="$(cd "$(dirname "$0")" && pwd)"
+source $DIR/env.sh
 
 echo "---------RESOURCE GROUP-------------------"
 # TODO: add the region to this query!

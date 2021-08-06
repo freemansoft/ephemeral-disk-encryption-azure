@@ -1,6 +1,7 @@
 #!/bin/bash
 
-source env.sh
+DIR="$(cd "$(dirname "$0")" && pwd)"
+source $DIR/env.sh
 
 # https://docs.microsoft.com/en-us/cli/azure/vm?view=azure-cli-latest#az_vm_delete
 # should we add --force-deletion or --no-wait ?

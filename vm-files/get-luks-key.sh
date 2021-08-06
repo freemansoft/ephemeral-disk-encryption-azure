@@ -1,6 +1,7 @@
 #!/bin/bash
-# this is functionally identical luks-keys.sh
-source luks-env.sh
+# this is functionally identical luks-keys.sh but noisier and doesn't support key to standard out
+DIR="$(cd "$(dirname "$0")" && pwd)"
+source $DIR/luks-env.sh
 
 # curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash 
 

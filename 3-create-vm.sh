@@ -1,10 +1,11 @@
 #!/bin/bash
 # Create a VM, create the env.sh file and push the client files to the VM
 
-source env.sh
+DIR="$(cd "$(dirname "$0")" && pwd)"
+source $DIR/env.sh
 
 # we need to asssociate the identity that has access to the secret
-source env-identity.sh
+source $DIR/env-identity.sh
 #az vm list-sizes --location $region --output table
 # Create the VM if it does not exist -- this is an example so we do it as simply as possible
 # This command does not return the ip address
@@ -43,7 +44,7 @@ EOL
 
 # assumes vm-env.sh created in previous step
 echo "copying files to VM"
-scp -q -r vm-files/* $vm_admin_user@$public_ip:.
+scp -q -r $DIR/vm-files/* $vm_admin_user@$public_ip:.
 
 echo "----------connect------------------"
 echo "ssh $vm_admin_user@$public_ip"

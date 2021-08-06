@@ -1,6 +1,7 @@
 #!/bin/bash
 
-source env.sh
+DIR="$(cd "$(dirname "$0")" && pwd)"
+source $DIR/env.sh
 
 accounts=$(az account list)
 if [ "[]" == "$accounts" ]; then 

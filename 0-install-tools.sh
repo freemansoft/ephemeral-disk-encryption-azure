@@ -1,5 +1,6 @@
 #!/bin/bash
-source env.sh
+DIR="$(cd "$(dirname "$0")" && pwd)"
+source $DIR/env.sh
 
 if ! command -v jq &> /dev/null
 then
