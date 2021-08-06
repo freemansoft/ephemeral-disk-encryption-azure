@@ -18,13 +18,11 @@ identity_name="uai-$root_name"
 
 # On Linux virtual machines, the temporary disk is typically /dev/sdb and is formatted and mounted to /mnt by the Azure Linux Agent
 # Standard_A2_v2 20gb temp storage
+# On storage optimized machine there are NVMe drives that are not mounted /dev/??
 # Standard_L8s_v2 machines have unmounted NvMe drive per 8 vcore and are expensive
-vm_type="Standard_A2_V2"
+vm_type="Standard_A2_v2"
 #vm_type="Standard_L8s_v2"
+
 vm_name="vm-$root_name"
 vm_admin_user="azureuser"
 
-# commnent out login after logged in one time and prior to timeout
-# TODO determine if login required
-echo "running interactive login"
-az login
