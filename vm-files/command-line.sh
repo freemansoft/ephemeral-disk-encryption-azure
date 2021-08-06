@@ -6,7 +6,7 @@ parted /dev/nvme0n1 mklabel gpt
 parted -a opt /dev/nvme0n1 mkpart datadisk xfs 0% 100%
 
 /etc/luks-key.sh | cryptsetup -d - -v --type luks2 luksFormat /dev/nvme0n1p1
-/etc/luks-key.sh |cryptsetup -d - -v luksOpen /dev/nvme0n1p1 data1
+/etc/luks-key.sh | cryptsetup -d - -v luksOpen /dev/nvme0n1p1 data1
 
 mkfs.xfs -L data1 /dev/mapper/data1
 

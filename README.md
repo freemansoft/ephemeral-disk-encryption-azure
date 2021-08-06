@@ -19,7 +19,7 @@ These scripts allocate LS_v2 machines by default.  They are **expensive** so _te
     * `0...` install tooling
     * `1...` log into Azure using the CLI
     * `2...` create the keyvault and a secret and an identity
-    * `3...` create a VM. Associate the identity as user defined. Copy utility files to the VM via SSH
+    * `3...` create a VM. Associate the identity as user defined. Customize any utility vm files. Copy utility files to the VM via SSH
 1. SSH onto the VM to verify
     * Run `vm-get-token.sh` to verify the identity has been applied to the server and the secret is retirevable.
 

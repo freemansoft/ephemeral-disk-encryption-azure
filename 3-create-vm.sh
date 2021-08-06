@@ -31,7 +31,7 @@ fi
 echo "----------REMOTE ENV------------------"
 echo "creating vm-files/env.sh"
 secret_id=$(az keyvault secret show --vault-name "$key_vault_name" --name "$secret_name" --query id -o tsv )
-cat > vm-files/env.sh <<EOL
+cat > vm-files/luks-env.sh <<EOL
 #!/bin/bash
 # created `date`
 # 

@@ -1,5 +1,6 @@
 #!/bin/bash
-source env.sh
+# this is functionally identical luks-keys.sh
+source luks-env.sh
 
 # curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash 
 
