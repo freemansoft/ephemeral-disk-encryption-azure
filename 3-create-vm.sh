@@ -36,13 +36,13 @@ cat > vm-files/env.sh <<EOL
 # created `date`
 # 
 
-identity_client_id=$identity_client_id
-secret_id=$secret_id
+identity_client_id="$identity_client_id"
+secret_id="$secret_id"
 
 EOL
 
 # assumes vm-env.sh created in previous step
-echo "copying files"
+echo "copying files to VM"
 scp -q -r vm-files/* $vm_admin_user@$public_ip:.
 
 echo "----------connect------------------"

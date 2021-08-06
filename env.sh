@@ -5,7 +5,7 @@ region="EastUS"
 
 # add version # to name  to avoid complications with soft-deleted keyvaults while testing
 # keyvault deletes are soft deletes witha purgable recovery == 90 days 2021/07
-root_name="luks-example-10"
+root_name="luks-example-11"
 
 resource_group="rg-$root_name"
 key_vault_name="kv-$root_name"
