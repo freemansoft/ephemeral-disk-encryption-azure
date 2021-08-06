@@ -6,6 +6,6 @@ StopWhenUnneeded=true
 
 [Service]
 Type=oneshot
-ExecStart=/bin/sh -c '/etc/luks-key.sh | /sbin/cryptsetup -d - -v luksOpen /dev/disk/by-uuid/10b0f5d7-09bd-42f8-9e0e-6c5b48d89bf6 data1'
+ExecStart=/bin/sh -c '/etc/luks-key.sh | /sbin/cryptsetup -d - -v luksOpen /dev/disk/by-uuid/DRIVE_UUID data1'
 RemainAfterExit=true
 ExecStop=/sbin/cryptsetup -d - -v luksClose data1

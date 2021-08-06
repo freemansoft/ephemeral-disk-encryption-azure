@@ -30,21 +30,18 @@ else
 fi
 
 echo "----------REMOTE ENV------------------"
-echo "creating vm-files/env.sh"
+echo "creating vm-files/luks-env.sh"
 secret_id=$(az keyvault secret show --vault-name "$key_vault_name" --name "$secret_name" --query id -o tsv )
 cat > vm-files/luks-env.sh <<EOL
 #!/bin/bash
-# created `date`
-# 
-
+# created `date` specifically for User Defined Identity and Secret
 identity_client_id="$identity_client_id"
 secret_id="$secret_id"
-
 EOL
 
 # assumes vm-env.sh created in previous step
 echo "copying files to VM"
-scp -q -r $DIR/vm-files/* $vm_admin_user@$public_ip:.
+scp -rpq $DIR/vm-files $vm_admin_user@$public_ip:.
 
 echo "----------connect------------------"
 echo "ssh $vm_admin_user@$public_ip"

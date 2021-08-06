@@ -1,5 +1,7 @@
 #!/bin/bash
-# this is functionally identical luks-keys.sh but noisier and doesn't support key to standard out
+# Functionally identical luks-keys.sh 
+# Differs in that it can run from anywhere assumes luks-env.sh is in same directory
+
 DIR="$(cd "$(dirname "$0")" && pwd)"
 source $DIR/luks-env.sh
 

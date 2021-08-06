@@ -21,7 +21,7 @@ identity_name="uai-$root_name"
 # On storage optimized machine there are NVMe drives that are not mounted /dev/??
 # Standard_L8s_v2 machines have unmounted NvMe drive per 8 vcore and are expensive
 vm_type="Standard_A2_v2"
-#vm_type="Standard_L8s_v2"
+vm_type="Standard_L8s_v2"
 
 vm_name="vm-$root_name"
 vm_admin_user="azureuser"
