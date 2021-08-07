@@ -22,7 +22,7 @@ identity_name="uai-$root_name"
 # Standard_L8s_v2 machines have unmounted NvMe drive per 8 vcore and are expensive. Standard_L16s_v2 are double everything
 vm_type="Standard_A2_v2"
 vm_type="Standard_L8s_v2"
-#vm_type="Standard_L24s_v2"
+vm_type="Standard_L16s_v2"
 
 vm_name="vm-$root_name"
 vm_admin_user="azureuser"

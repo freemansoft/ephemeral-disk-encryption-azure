@@ -24,17 +24,21 @@ create_luks_etc_utils(){
     chmod 0500 /etc/luks-key.sh
     chown root:root /etc/luks-env.sh
     chmod 0500 /etc/luks-env.sh
-}
+ }
 
 # once per drive
-create_luks_partitions() {
+create_luks_partition() {
     parted $DISK_DEVICE mklabel gpt
-    parted -a opt $DISK_DEVICE mkpart datadisk xfs 0% 100%
+    parted --align opt $DISK_DEVICE mkpart datadisk xfs 0% 100%
+    #sudo parted $DISK_DEVICE print
+    partprobe
+}
 
+encrypt_luks_partition() {
     # encrypt the volume - format as encrypted device
-    /etc/luks-key.sh | cryptsetup -d - -v --type luks2 luksFormat $DISK_PARTITION
+    echo $LUKS_KEY | cryptsetup --key-file - -v --type luks2 luksFormat $DISK_PARTITION
     # open the encrypted volume - $LUKS_PART_NAME will be name in /dev/mapper
-    /etc/luks-key.sh | cryptsetup -d - -v luksOpen $DISK_PARTITION $LUKS_PART_NAME
+    echo $LUKS_KEY | cryptsetup --key-file - -v luksOpen $DISK_PARTITION $LUKS_PART_NAME
 
     # set the encrypted partition label the same on all drives
     mkfs.xfs -L data $LUKS_DEVICE
@@ -42,7 +46,7 @@ create_luks_partitions() {
 }
 
 # once per drive - variable driven to run across multiple drives
-create_luks_automounts() {
+create_luks_automount() {
  
     cp $DIR/data.mount $MOUNT_DEF
     chown root:root $MOUNT_DEF
@@ -81,17 +85,21 @@ create_vars() {
 }
 
 create_luks_etc_utils
-# should loop until find no more NVMe drives
+LUKS_KEY="$(/etc/luks-key.sh)"
+echo $LUKS_KEY
+# loop until find no more NVMe drives
 for DISK_NUM in {0..9}
 do
     create_vars
     if [ -e "$DISK_DEVICE" ]
     then
-        echo "creating devices $DISK_DEVICE $DISK_PARTITION"
-        create_luks_partitions
+        echo "creating partition $DISK_DEVICE"
+        create_luks_partition
+        echo "encrypting $DISK_PARTITION $LUKS_PART_NAME"
+        encrypt_luks_partition
         echo "creating mounts $DISK_DEVICE $DISK_PARTITION"
-        create_luks_automounts
+        create_luks_automount
     else
-        exit 0
+        break
     fi
 done

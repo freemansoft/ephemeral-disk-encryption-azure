@@ -20,6 +20,7 @@ if [ "[]" == "$vms_metadata" ]; then
         --image UbuntuLTS \
         --admin-username "$vm_admin_user" \
         --size "$vm_type" \
+        --public-ip-sku Standard \
         --generate-ssh-keys )
     public_ip=$(jq -r ".publicIpAddress" <<< "$vm_create_results")
     echo "Connect with: 'ssh $vm_admin_user@$public_ip'"
