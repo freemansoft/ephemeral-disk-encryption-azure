@@ -31,10 +31,13 @@ create_luks_partitions() {
     parted $DISK_DEVICE mklabel gpt
     parted -a opt $DISK_DEVICE mkpart datadisk xfs 0% 100%
 
+    # encrypt the volume - format as encrypted device
     /etc/luks-key.sh | cryptsetup -d - -v --type luks2 luksFormat $DISK_PARTITION
+    # open the encrypted volume - $LUKS_PART_NAME will be name in /dev/mapper
     /etc/luks-key.sh | cryptsetup -d - -v luksOpen $DISK_PARTITION $LUKS_PART_NAME
 
-    mkfs.xfs -L $LUKS_PART_NAME $LUKS_DEVICE
+    # set the encrypted partition label the same on all drives
+    mkfs.xfs -L data $LUKS_DEVICE
     cryptsetup -v luksClose $LUKS_PART_NAME
 }
 
@@ -44,31 +47,37 @@ create_luks_automounts() {
     cp $DIR/data.mount $MOUNT_DEF
     chown root:root $MOUNT_DEF
     sed -i "s:--LUKS_DEVICE--:$LUKS_DEVICE:g" "$MOUNT_DEF"
-    sed -i "s:--LUKS_PART_NAME--:$LUKS_PART_NAME:g" "$MOUNT_DEF"
+    sed -i "s:--LUKS_MOUNT_POINT--:$LUKS_MOUNT_POINT:g" "$MOUNT_DEF"
     sed -i "s:--SERVICE_DEF_NAME--:$SERVICE_DEF_NAME:g" "$MOUNT_DEF"
 
     cp $DIR/unlock-data.service $SERVICE_DEF
     chown root:root $SERVICE_DEF
-    # in unlock-data<n>.service - replace DRIVE_UUID with $DRIVE_UUID
+    # use the UUID because - I really have no idea
     DRIVE_UUID="$(lsblk -o UUID $DISK_PARTITION --noheadings)"
     #echo $DRIVE_UUID
     sed -i "s:--DRIVE_UUID--:$DRIVE_UUID:g" "$SERVICE_DEF"
     sed -i "s:--LUKS_PART_NAME--:$LUKS_PART_NAME:g" "$SERVICE_DEF"
 
+    # mount point ust match the unit name
+    mkdir -p $LUKS_MOUNT_POINT
     systemctl daemon-reload
-    mkdir -p /$LUKS_PART_NAME
     systemctl enable --now $MOUNT_DEF
 }
 
 # once per drive
 create_vars() {
-    DISK_DEVICE="/dev/nvme""$DISK_NUM""n1"
-    DISK_PARTITION="/dev/nvme""$DISK_NUM""n1p1"
-    LUKS_PART_NAME="data""$DISK_NUM"
-    LUKS_DEVICE="/dev/mapper/data""$DISK_NUM"
-    MOUNT_DEF="/etc/systemd/system/data""$DISK_NUM"".mount"
-    SERVICE_DEF="/etc/systemd/system/unlock-data""$DISK_NUM"".service"
-    SERVICE_DEF_NAME="unlock-data""$DISK_NUM"".service"
+    DISK_DEVICE="/dev/nvme$DISK_NUM""n1"
+    DISK_PARTITION="$DISK_DEVICE""p1"
+
+    # /dev/mapper name is magical part of cryptsetup
+    LUKS_PART_NAME="data$DISK_NUM"
+    LUKS_DEVICE="/dev/mapper/$LUKS_PART_NAME"
+    LUKS_MOUNT_POINT="/$LUKS_PART_NAME"
+
+    MOUNT_DEF_NAME="$LUKS_PART_NAME"".mount"
+    MOUNT_DEF="/etc/systemd/system/$MOUNT_DEF_NAME"
+    SERVICE_DEF_NAME="unlock-$LUKS_PART_NAME"".service"
+    SERVICE_DEF="/etc/systemd/system/$SERVICE_DEF_NAME"
 }
 
 create_luks_etc_utils

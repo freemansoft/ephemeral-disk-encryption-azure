@@ -65,5 +65,6 @@ nvme0n1     259:0    0  1.8T  0 disk
 * https://www.azurecitadel.com/vm/identity/
 * https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/tutorial-windows-vm-access-nonaad
 * https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt
+* https://docs.microsoft.com/en-us/azure/key-vault/general/manage-with-cli2
 
 

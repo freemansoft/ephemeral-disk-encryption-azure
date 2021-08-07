@@ -4,7 +4,7 @@ After=--SERVICE_DEF_NAME--
 
 [Mount]
 What=--LUKS_DEVICE--
-Where=--LUKS_PART_NAME--
+Where=--LUKS_MOUNT_POINT--
 Type=xfs
 Options=defaults,noatime
 
