@@ -1,5 +1,13 @@
 #!/bin/bash
-# Create a VM, create the env.sh file and push the client files to the VM
+# Assumes 
+#   azure cli is installed
+#   jq is installed
+#   default subscription
+# Provisions
+#   Create a VM
+#   Assigns User Assigned Identity
+#   Create the env.sh file 
+#   Push the client files to the VM
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 source $DIR/env.sh

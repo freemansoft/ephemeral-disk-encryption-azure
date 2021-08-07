@@ -1,4 +1,6 @@
 #!/bin/bash
+# install azure CLI and snap on local machine
+
 DIR="$(cd "$(dirname "$0")" && pwd)"
 source $DIR/env.sh
 

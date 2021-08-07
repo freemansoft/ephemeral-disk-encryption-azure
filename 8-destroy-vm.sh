@@ -1,4 +1,9 @@
 #!/bin/bash
+# Assumes
+#   azure cli is installed
+#   default subscription
+# Destroys 
+#   VM leaving all other resources unaffected
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
 source $DIR/env.sh

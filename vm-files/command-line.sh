@@ -86,8 +86,10 @@ create_vars() {
 
 create_luks_etc_utils
 LUKS_KEY="$(/etc/luks-key.sh)"
-echo $LUKS_KEY
+# echo $LUKS_KEY
 # loop until find no more NVMe drives
+
+# found that this only works if all the partition changes are made before encrypting drives
 for DISK_NUM in {0..9}
 do
     create_vars
@@ -95,6 +97,15 @@ do
     then
         echo "creating partition $DISK_DEVICE"
         create_luks_partition
+    else
+        break
+    fi
+done
+for DISK_NUM in {0..9}
+do
+    create_vars
+    if [ -e "$DISK_DEVICE" ]
+    then
         echo "encrypting $DISK_PARTITION $LUKS_PART_NAME"
         encrypt_luks_partition
         echo "creating mounts $DISK_DEVICE $DISK_PARTITION"

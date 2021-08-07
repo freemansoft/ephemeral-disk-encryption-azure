@@ -20,18 +20,38 @@ You can run the VM and secret part without the NVMe LUKs with a cheaper machine 
     * `az --version` should be 2.26.1 _or later_
 1. Edit `env.sh` to set the resource names
 1. Run scripts 0,1,2,3 to create resources.  The scripts are re-runable. 
-    * `0...` install tooling.  It may _sudo_ to install snap or Azure CLI
-    * `1...` log into Azure using the CLI
-    * `2...` create the keyvault and a secret and an identity
-    * `3...` create a VM. Associate the identity as user defined. Customize any utility vm files. Copy utility files to the VM via SSH
+    * `0-install-tools.sh` 
+    * `1-login-az.sh`
+    * `2-create-resources.sh`
+    * `3-create-vm.sh` 
 1. SSH onto the VM to verify
-    * `ssh azureuser@<ip>` as shown at the end of script `3...sh`
-    * Run `get-user-identity-secret.sh` to verify the identity has been applied to the server and the secret is retirevable.
+    * `ssh azureuser@<ip>` 
+        * shown at the end of script `3-create-vm.sh`
+    * Run `get-user-identity-secret.sh` 
+        * Verify the User Assigned Identity has been applied to the server and the secret is retirevable.
+
+Provisioning Script Functions
+| Script | Function |
+| ------ | -------- | 
+| 0-install-tools.sh | Install the Azure CLI |
+| 0-install-tools.sh | Gnstall jq |
+| 1-login-az.sh      | Get azure login credentials. Only runs login if not logged in |
+| 2-create-resources.sh | Create Resource Group | 
+| 2-create-resources.sh | Create Key Vault | 
+| 2-create-resoruces.sh | Create Secret to be used as LUKS encryption key |
+| 2-create-resources.sh | Create User Assigned Identity |
+| 3-create-vm.sh        | Create a VM |
+| 3-create-vm.sh        | Associate UAI to it | 
+| 3-create-vm.sh        | Create customized scripts that install and  maintain LUKS encrypted drives |
+| 3-create-vm.sh        | Copy scripts to VM using SCP |
+| 3-create-vm.sh        | Provide user ssh connection string |
+
 
 # Luks encrypting the local disk
-1. SSH into the vm per the output of `3...sh`
+1. SSH into the vm per the output of `3.create-vm.sh`
+    * `ssh azureuser@<ip>`
 1. `cd vm-tools`
-1. partition the NVMe, encrypt the partion. Add the mount to the /etc
+1. Partition the NVM. Add the mount to the /etc
     * Run `sudo bash command-line.sh`
 1. run `df` and `lsblk` to verify the LUKS mount
 
@@ -56,8 +76,8 @@ nvme0n1     259:0    0  1.8T  0 disk
 
 # Destroying resources
 * Return to the host
-* Run `8...` to destroy the VM
-* Run `9...` destroy the resource group. This will destroy the keyvault, the secret, the identity and the VM
+* Run `8-destroy-vm.sh` to destroy the VM
+* Run `9-destroy-resource-group.sh` destroy the resource group. This will destroy the keyvault, the secret, the identity and the VM
 
 ## References
 * https://withblue.ink/2020/01/19/auto-mounting-encrypted-drives-with-a-remote-key-on-linux.html

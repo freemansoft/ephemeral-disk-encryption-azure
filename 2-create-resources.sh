@@ -1,8 +1,14 @@
 #!/bin/bash
 #
-# Assumes azure cli is installed
-# Assumes jq is installed
-# Assumes default subscription
+# Assumes 
+#   azure cli is installed
+#   jq is installed
+#   default subscription
+# Provisions
+#   Resource Group
+#   Key Vault
+#   Secret
+#   User Assigned Identity
 
 # Edit env.sh to your preferences
 DIR="$(cd "$(dirname "$0")" && pwd)"
