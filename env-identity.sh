@@ -1,4 +1,5 @@
 #!/bin/bash
+# The user identity was needed in more than one script
 
 identity_metadata=$(az identity show --name $identity_name --resource-group $resource_group)
 

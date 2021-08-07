@@ -17,11 +17,12 @@ secret_name="sn-$root_name"
 identity_name="uai-$root_name"
 
 # On Linux virtual machines, the temporary disk is typically /dev/sdb and is formatted and mounted to /mnt by the Azure Linux Agent
-# Standard_A2_v2 20gb temp storage
+# Standard_A2_v2 20gb temp storage with no NVMe
 # On storage optimized machine there are NVMe drives that are not mounted /dev/??
-# Standard_L8s_v2 machines have unmounted NvMe drive per 8 vcore and are expensive
+# Standard_L8s_v2 machines have unmounted NvMe drive per 8 vcore and are expensive. Standard_L16s_v2 are double everything
 vm_type="Standard_A2_v2"
 vm_type="Standard_L8s_v2"
+vm_type="Standard_L16s_v2"
 
 vm_name="vm-$root_name"
 vm_admin_user="azureuser"

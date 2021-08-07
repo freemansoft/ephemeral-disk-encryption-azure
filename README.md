@@ -6,9 +6,13 @@ This project creates an Azure KeyVault Secret and then creates a VM and makes th
 
 # WARNING
 These scripts allocate LS_v2 machines by default.  They are **expensive** so _tear them down_ when done.
+You can run the VM and secret part without the NVMe LUKs with a cheaper machine by changing the machine type in env.sh
 
 # TODO
-* Add encryption of ephemeral disks using the secret retireved from Azure KeyValut
+* This **should** all be done with templates instead of scripts
+
+# BUGS
+* only works for first NVMe
 
 # Creating a Resource group, secretes and a VM
 1. Install the Azure CLI.  
@@ -32,6 +36,7 @@ These scripts allocate LS_v2 machines by default.  They are **expensive** so _te
 1. run `df` and `lsblk` to verify the LUKS mount
 
 # The file system after encryption
+Standard_L8s_v2
 ```
 $ lsblk
 NAME        MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINT
