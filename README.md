@@ -12,7 +12,7 @@ You can run the VM and secret part without the NVMe LUKs with a cheaper machine 
 * This **should** all be done with templates instead of scripts
 
 # BUGS
-* only works for first NVMe
+* only works for first NVMe - errors out on second drive
 
 # Creating a Resource group, secretes and a VM
 1. Install the Azure CLI.  
