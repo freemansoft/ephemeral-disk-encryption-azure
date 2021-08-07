@@ -1,0 +1,12 @@
+[Unit]
+Requires=--SERVICE_DEF_NAME--
+After=--SERVICE_DEF_NAME--
+
+[Mount]
+What=--LUKS_DEVICE--
+Where=--LUKS_PART_NAME--
+Type=xfs
+Options=defaults,noatime
+
+[Install]
+WantedBy=multi-user.target

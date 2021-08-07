@@ -1,0 +1,11 @@
+[Unit]
+Description=Open encrypted data volume
+After=network-online.target
+Wants=network-online.target
+StopWhenUnneeded=true
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c '/etc/luks-key.sh | /sbin/cryptsetup -d - -v luksOpen /dev/disk/by-uuid/--DRIVE_UUID-- --LUKS_PART_NAME--'
+RemainAfterExit=true
+ExecStop=/sbin/cryptsetup -d - -v luksClose --LUKS_PART_NAME--
