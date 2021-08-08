@@ -61,12 +61,12 @@ They setup and enable LUKS encryption across all NVMe drives.
 * `lunks-key.sh` is the only real Azure dependency. It is responsible for retrieving the LUKS encryption key from the KeyVault.
 
 ## Enabling encryption on a provisioned VM
-1. SSH into the vm per the output of `3.create-vm.sh`
-    * `ssh azureuser@<ip>`
-1. `cd vm-tools`
-1. Partition the NVM. Add the mount to the /etc
-    * Run `sudo bash command-line.sh`
-1. run `df` and `lsblk` to verify the LUKS mount
+| Command Line | Purpose |
+| ------------ | ------- |
+| `ssh azureuser@<ip>` | SSH into the vm per the output of `3.create-vm.sh` |
+| `cd vm-tools` | tools are located here |
+| `sudo bash command-line.sh` | Partition the NVM. Add the mount to the /etc |
+| `lsblk` | verify the LUKS enabled on the NVMe |
 
 # The file system after encryption
 Standard_L16s_v2 with two ephemeral disks.
