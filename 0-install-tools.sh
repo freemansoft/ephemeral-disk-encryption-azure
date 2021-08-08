@@ -7,7 +7,9 @@ source $DIR/env.sh
 if ! command -v jq &> /dev/null
 then
     echo "installing jq with snap"
-    sudo snap install jq
+    if ! sudo snap install jq ; then
+        sudo apt install -y jq
+    fi
 else
     echo "jq already installed"
 fi
