@@ -55,6 +55,11 @@ Provisioning Script Functions
 
 
 # Luks encrypting the local disk
+The scripts in `vm-files` are installed on the Virtual Machine and setup and enable LUKS encryption across all NVMe drives.
+* `lunks-key.sh` is the only real Azure dependency.  It is responsible for retrieving the LUKS encryption key from the KeyVault.
+
+## Enabling encryption on a provisioned VM
+
 1. SSH into the vm per the output of `3.create-vm.sh`
     * `ssh azureuser@<ip>`
 1. `cd vm-tools`
