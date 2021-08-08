@@ -41,7 +41,7 @@ Provisioning Script Functions
 | Script | Function |
 | ------ | -------- | 
 | 0-install-tools.sh | Install the Azure CLI |
-| 0-install-tools.sh | Gnstall jq |
+| 0-install-tools.sh | Install jq |
 | 1-login-az.sh      | Get azure login credentials. Only runs login if not logged in |
 | 2-create-resources.sh | Create Resource Group | 
 | 2-create-resources.sh | Create Key Vault | 
