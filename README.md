@@ -5,14 +5,21 @@ This project creates an Azure KeyVault Secret and then creates a VM and makes th
 * The VM must query for the secret with that identity
 
 # WARNING
-These scripts allocate LS_v2 machines by default.  They are **expensive** so _tear them down_ when done.
-You can run the VM and secret part without the NVMe LUKs with a cheaper machine by changing the machine type in env.sh
+These scripts allocate LS_v2 machines by default because they have the local NVMe drives.  
+LS_v2 machines are **expensive**. _tear down the VM_ when done using the provided scripts.
+The Resource Group, KeyVault, Secrets and User Assigned Identity are cheap and don't cost much to retain.
+
+You can create the Key Vault, Secrets and a VM using a cheaper VM without NVMe drives by changing the machine type in env.sh
+This would be useful if you wanted to play with _Secrets_ and _Identities_ without the need of the NVMe drives.
+
+Many different Azure VM types come with local storage.  That storage is automatically formatted and automounted.
+They are not the VM types we are LUKS encrypting for document db usage.
 
 # TODO
-* This **should** all be done with templates instead of scripts
+* All of this resource creation and customization **should** all be done with templates instead of scripts
 
-# BUGS
-* only works for first NVMe - errors out on second drive
+# ISSUES
+* The _Resource Group_ deletion script removes the KeyVault which have a default 90 day retention policy and cannot be re-created.
 
 # Creating a Resource group, secretes and a VM
 1. Install the Azure CLI.  
@@ -41,7 +48,7 @@ Provisioning Script Functions
 | 2-create-resoruces.sh | Create Secret to be used as LUKS encryption key |
 | 2-create-resources.sh | Create User Assigned Identity |
 | 3-create-vm.sh        | Create a VM |
-| 3-create-vm.sh        | Associate UAI to it | 
+| 3-create-vm.sh        | Associate system identity and previously created User Assigned Identity to it | 
 | 3-create-vm.sh        | Create customized scripts that install and  maintain LUKS encrypted drives |
 | 3-create-vm.sh        | Copy scripts to VM using SCP |
 | 3-create-vm.sh        | Provide user ssh connection string |
@@ -86,5 +93,6 @@ nvme0n1     259:0    0  1.8T  0 disk
 * https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/tutorial-windows-vm-access-nonaad
 * https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt
 * https://docs.microsoft.com/en-us/azure/key-vault/general/manage-with-cli2
+* Azure CLI Examples https://github.com/Azure-Samples/azure-cli-samples
 
 
