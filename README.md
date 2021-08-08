@@ -4,7 +4,7 @@ This project creates an Azure KeyVault Secret and then creates a VM and makes th
 * It creates a User Assigned identity and gives it access to the secret
 * The VM must query for the secret with that identity
 
-# WARNING
+## WARNING
 These scripts allocate LS_v2 machines by default because they have the local NVMe drives.  
 LS_v2 machines are **expensive**. _tear down the VM_ when done using the provided scripts.
 The Resource Group, KeyVault, Secrets and User Assigned Identity are cheap and don't cost much to retain.
@@ -15,10 +15,10 @@ This would be useful if you wanted to play with _Secrets_ and _Identities_ witho
 Many different Azure VM types come with local storage.  That storage is automatically formatted and automounted.
 They are not the VM types we are LUKS encrypting for document db usage.
 
-# TODO
+## TODO
 * All of this resource creation and customization **should** all be done with templates instead of scripts
 
-# ISSUES
+## ISSUES
 * The _Resource Group_ deletion script removes the KeyVault which have a default 90 day retention policy and cannot be re-created.
 
 # Creating a Resource group, secretes and a VM
@@ -55,11 +55,12 @@ Provisioning Script Functions
 
 
 # Luks encrypting the local disk
-The scripts in `vm-files` are installed on the Virtual Machine and setup and enable LUKS encryption across all NVMe drives.
-* `lunks-key.sh` is the only real Azure dependency.  It is responsible for retrieving the LUKS encryption key from the KeyVault.
+The actual LUKS encryption is done by scritps installed onto the virtual machine.
+The scripts in `vm-files` are installed on the Virtual Machine.
+They setup and enable LUKS encryption across all NVMe drives.
+* `lunks-key.sh` is the only real Azure dependency. It is responsible for retrieving the LUKS encryption key from the KeyVault.
 
 ## Enabling encryption on a provisioned VM
-
 1. SSH into the vm per the output of `3.create-vm.sh`
     * `ssh azureuser@<ip>`
 1. `cd vm-tools`
@@ -68,7 +69,7 @@ The scripts in `vm-files` are installed on the Virtual Machine and setup and ena
 1. run `df` and `lsblk` to verify the LUKS mount
 
 # The file system after encryption
-Standard_L8s_v2
+Standard_L16s_v2 with two ephemeral disks.
 ```
 $ lsblk
 NAME        MAJ:MIN RM  SIZE RO TYPE  MOUNTPOINT
@@ -83,13 +84,19 @@ sdb           8:16   0   30G  0 disk
 sr0          11:0    1  628K  0 rom
 nvme0n1     259:0    0  1.8T  0 disk
 └─nvme0n1p1 259:1    0  1.8T  0 part
-  └─data0   253:0    0  1.8T  0 crypt /data0
+  └─data0   253:0    0  1.8T  0 crypt /data
+nvme1n1     259:0    0  1.8T  0 disk
+└─nvme1n1p1 259:1    0  1.8T  0 part
+  └─data1   253:0    0  1.8T  0 crypt /data
+
 ```
 
 # Destroying resources
-* Return to the host
-* Run `8-destroy-vm.sh` to destroy the VM
-* Run `9-destroy-resource-group.sh` destroy the resource group. This will destroy the keyvault, the secret, the identity and the VM
+Tear down the azure resources using these scripts. 
+| Script | Function |
+| ------ | -------- | 
+| 8-destroy-vm.sh | to destroy the VM |
+| 9-destroy-resource-group.sh | destroy the resource group. This will destroy the keyvault, the secret, the identity and the VM |
 
 ## References
 * https://withblue.ink/2020/01/19/auto-mounting-encrypted-drives-with-a-remote-key-on-linux.html
