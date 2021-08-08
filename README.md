@@ -34,7 +34,7 @@ They are not the VM types we are LUKS encrypting for document db usage.
 1. SSH onto the VM to verify
     * `ssh azureuser@<ip>` 
         * shown at the end of script `3-create-vm.sh`
-    * Run `get-user-identity-secret.sh` 
+    * Run `get-secret-via-uai-oath.sh` 
         * Verify the User Assigned Identity has been applied to the server and the secret is retirevable.
 
 Provisioning Script Functions
@@ -84,10 +84,10 @@ sdb           8:16   0   30G  0 disk
 sr0          11:0    1  628K  0 rom
 nvme0n1     259:0    0  1.8T  0 disk
 └─nvme0n1p1 259:1    0  1.8T  0 part
-  └─data0   253:0    0  1.8T  0 crypt /data
+  └─data0   253:0    0  1.8T  0 crypt /data0
 nvme1n1     259:0    0  1.8T  0 disk
 └─nvme1n1p1 259:1    0  1.8T  0 part
-  └─data1   253:0    0  1.8T  0 crypt /data
+  └─data1   253:0    0  1.8T  0 crypt /data1
 
 ```
 

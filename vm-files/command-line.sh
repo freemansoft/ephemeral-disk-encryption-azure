@@ -48,13 +48,13 @@ encrypt_luks_partition() {
 # once per drive - variable driven to run across multiple drives
 create_luks_automount() {
  
-    cp $DIR/data.mount $MOUNT_DEF
+    cp $DIR/data.mount.template $MOUNT_DEF
     chown root:root $MOUNT_DEF
     sed -i "s:--LUKS_DEVICE--:$LUKS_DEVICE:g" "$MOUNT_DEF"
     sed -i "s:--LUKS_MOUNT_POINT--:$LUKS_MOUNT_POINT:g" "$MOUNT_DEF"
     sed -i "s:--SERVICE_DEF_NAME--:$SERVICE_DEF_NAME:g" "$MOUNT_DEF"
 
-    cp $DIR/unlock-data.service $SERVICE_DEF
+    cp $DIR/unlock-data.service.template $SERVICE_DEF
     chown root:root $SERVICE_DEF
     # use the UUID because - I really have no idea
     DRIVE_UUID="$(lsblk -o UUID $DISK_PARTITION --noheadings)"
