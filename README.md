@@ -15,6 +15,31 @@ This would be useful if you wanted to play with _Secrets_ and _Identities_ witho
 Many different Azure VM types come with local storage.  That storage is automatically formatted and automounted.
 They are not the VM types we are LUKS encrypting for document db usage.
 
+## Disk Topology
+Disk Optimized Virtual Machines have direct attached NVMe drives that are intended as storage devices
+for document databases like Cassandra, MongoDB, ElasticSearch or others. It is up to to the 
+provisioner to configure those drives.  In or case we will LUKS encrypt a partition on each local
+ephemeral drive in order to implement "encryption at rest".
+
+![Script Flow](./images/Disk-Topology-2.png)
+
+Many VM types have local ephemeral storage that is encrypted, formatted and mounted to be used as temp space.
+They are not intended to be used as data drives by document stores.
+
+## Azure Resource Topology
+This example creates a Resource Group.
+It then creates a Key Vault, a Secret, and an Identity.
+That identity is given READ access to the secret via a policy in the KeyVault
+The VM is assigned a system identity and the newly created identity.  
+The VM uses the identity to retrieve the secret from the key vault by first acquiring an oauth token from the token server.
+It presents that identity token to the keyvault when requesting the secrets.
+![Script Flow](./images/Azure-Resource-Topology.png)
+
+## Using Secrets and Identities
+_This section will eventually discuss how identities can be used for finer grain access controls across various computing resources_
+![Script Flow](./images/Secrets-and-Identities.png)
+
+
 ## TODO
 * All of this resource creation and customization **should** all be done with templates instead of scripts
 
@@ -60,6 +85,7 @@ The scripts in `vm-files` are installed on the Virtual Machine.
 They setup and enable LUKS encryption across all NVMe drives.
 * `lunks-key.sh` is the only real Azure dependency. It is responsible for retrieving the LUKS encryption key from the KeyVault.
 
+
 ## Enabling encryption on a provisioned VM
 | Command Line | Purpose |
 | ------------ | ------- |
@@ -68,7 +94,10 @@ They setup and enable LUKS encryption across all NVMe drives.
 | `sudo bash command-line.sh` | Partition the NVM. Add the mount to the /etc |
 | `lsblk` | verify the LUKS enabled on the NVMe |
 
-# The file system after encryption
+## Encrypting and mounting the filesystem with systemd
+![Script Flow](./images/LUKS-Workflow.png)
+
+## The file system after encryption
 Standard_L16s_v2 with two ephemeral disks.
 ```
 $ lsblk
@@ -91,6 +120,7 @@ nvme1n1     259:0    0  1.8T  0 disk
 
 ```
 
+
 # Destroying resources
 Tear down the azure resources using these scripts. 
 | Script | Function |
@@ -99,12 +129,14 @@ Tear down the azure resources using these scripts.
 | 9-destroy-resource-group.sh | destroy the resource group. This will destroy the keyvault, the secret, the identity and the VM |
 
 ## References
-* https://withblue.ink/2020/01/19/auto-mounting-encrypted-drives-with-a-remote-key-on-linux.html
-* Files in vm-files sourced from https://gist.github.com/seanb4t/fc244805aec83e55bfd1d306c19cd624 
-* https://www.azurecitadel.com/vm/identity/
-* https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/tutorial-windows-vm-access-nonaad
-* https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt
-* https://docs.microsoft.com/en-us/azure/key-vault/general/manage-with-cli2
-* Azure CLI Examples https://github.com/Azure-Samples/azure-cli-samples
+* [Auto-mounting encrypted drives with a remote key on Linux at blue ink](https://withblue.ink/2020/01/19/auto-mounting-encrypted-drives-with-a-remote-key-on-linux.html)
+* Files in vm-files originally from [Sean Brandt's Github](https://gist.github.com/seanb4t/fc244805aec83e55bfd1d306c19cd624)
+* [Managing Identities at Azure Citadel](https://www.azurecitadel.com/vm/identity/)
+* [Managed Azure identities tutorial by Microsoft](https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/tutorial-windows-vm-access-nonaad)
+* [Installing the Azure CLI by Microsoft](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt)
+* [managing the keyvault with the CLI by Microsoft](https://docs.microsoft.com/en-us/azure/key-vault/general/manage-with-cli2)
+* [Azure CLI Examples by Microsoft](https://github.com/Azure-Samples/azure-cli-samples)
 
-
+## Videos
+* [Identities Secrets and Policies in Azure](https://youtu.be/HUW7_HvUBXE)
+* [LUKS Encrypting Ephemeral Disks in Azure](https://youtu.be/S62dsa8d82E)
