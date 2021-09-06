@@ -11,4 +11,4 @@
 # Edit env.sh to your preferences
 source env.sh
 
-az group delete --resource-group $resource_group
+az group delete --resource-group $AZURE_RESOURCE_GROUP

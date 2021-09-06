@@ -1,8 +1,8 @@
 #!/bin/bash
 # The user identity was needed in more than one script
 
-identity_metadata=$(az identity show --name $identity_name --resource-group $resource_group)
-
+identity_metadata=$(az identity show --name $AZURE_IDENTITY_NAME --resource-group $AZURE_RESOURCE_GROUP)
+# this should be the same as AZURE_IDENTITY_NAME
 identity_name=$(jq -r ".name" <<< "$identity_metadata")
 principal_id=$(jq -r ".principalId" <<< "$identity_metadata")
 identity_id=$(jq -r ".id" <<< "$identity_metadata")
