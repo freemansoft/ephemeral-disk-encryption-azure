@@ -125,8 +125,8 @@ nvme1n1     259:0    0  1.8T  0 disk
 Tear down the azure resources using these scripts. 
 | Script | Function |
 | ------ | -------- | 
-| 8-destroy-vm.sh | to destroy the VM |
-| 9-destroy-resource-group.sh | destroy the resource group. This will destroy the keyvault, the secret, the identity and the VM |
+| 91-destroy-vm.sh | to destroy the VM |
+| 90-destroy-resource-group.sh | destroy the resource group. This will destroy the keyvault, the secret, the identity and the VM |
 
 ## References
 * [Auto-mounting encrypted drives with a remote key on Linux at blue ink](https://withblue.ink/2020/01/19/auto-mounting-encrypted-drives-with-a-remote-key-on-linux.html)
